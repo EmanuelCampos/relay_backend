@@ -1,11 +1,17 @@
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from "apollo-server";
+import dotenv from "dotenv";
 
-import { schema } from './graphql/schema';
+import { connectDatabase } from "./config/mongoose";
+import { schema } from "./graphql/schema";
+
+dotenv.config();
+
+connectDatabase();
 
 const server = new ApolloServer({
-  schema
-})
+  schema,
+});
 
 server.listen(3000, () => {
-  console.log('Server is running') 
-})
+  console.log("Server is running");
+});

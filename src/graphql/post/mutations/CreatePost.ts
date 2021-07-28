@@ -1,75 +1,42 @@
 import { GraphQLNonNull, GraphQLString } from "graphql";
 import { mutationWithClientMutationId, toGlobalId } from "graphql-relay";
 
-import fs from 'fs';
-import { uuid } from 'uuidv4';
-import { resolve } from 'path';
-import { readDatabase } from "../../../utils";
+import PostModel from "../PostModel";
 import { PostEdge } from "../PostType";
 
 export default mutationWithClientMutationId({
-  name: 'CreatePost',
+  name: "CreatePost",
   inputFields: {
     title: {
       type: new GraphQLNonNull(GraphQLString),
     },
     body: {
       type: new GraphQLNonNull(GraphQLString),
-    }
+    },
   },
-  mutateAndGetPayload: async({ title, body }) => {
-    const source = resolve(__dirname, '..', '..', '..', '..');
-
-    const data = await readDatabase();
-
-    const post = {
-      id: uuid(),
-      title,
-      body
-    }
-
-    let posts = [];
-
-    if(data.posts) {
-      posts = [
-        ...data.posts,
-        {
-          ...post
-        }
-      ]
-    } else {
-      posts = [
-        {
-          ...post
-        }
-      ]
-    }
-
-    await fs.writeFileSync(`${source}/data.json`, JSON.stringify({
-      ...data,
-      posts
-    }));
+  mutateAndGetPayload: async ({ title, body }) => {
+    const post = new PostModel({ title, body });
+    await post.save();
 
     return {
       post,
       error: null,
-      success: "Post created successfully"
-    }
-
+      success: "Post created successfully",
+    };
   },
   outputFields: {
     postEdge: {
       type: PostEdge,
       resolve: async ({ post }) => {
-        if(!post) {
+        if (!post) {
           return null;
         }
 
         return {
-          cursor: toGlobalId('Post', post.id),
-          node: post
-        }
-      }
+          cursor: toGlobalId("Post", post.id),
+          node: post,
+        };
+      },
     },
     error: {
       type: GraphQLString,
@@ -79,5 +46,5 @@ export default mutationWithClientMutationId({
       type: GraphQLString,
       resolve: ({ success }: { success: string }) => success,
     },
-  }
-})
+  },
+});

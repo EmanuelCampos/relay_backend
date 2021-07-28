@@ -1,5 +1,7 @@
-import CreatePost from './CreatePost'
+import CreatePost from "./CreatePost";
+import LikePost from "./LikePost";
 
 export default {
-  CreatePost
-}
+  CreatePost,
+  LikePost,
+};

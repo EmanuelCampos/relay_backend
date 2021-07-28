@@ -1,12 +1,12 @@
 import { GraphQLObjectType } from "graphql";
 
-import PostMutations from '../post/mutations'
+import PostMutations from "../post/mutations";
 
 const MutationType = new GraphQLObjectType({
-  name: 'Mutation',
+  name: "Mutation",
   fields: () => ({
-    ...PostMutations
-  })
-})
+    ...PostMutations,
+  }),
+});
 
-export default MutationType
+export default MutationType;

@@ -1,11 +1,11 @@
-import { readDatabase } from "../../utils";
+import PostModel from "./PostModel";
 
 export async function loadAll() {
-  const posts = await readDatabase("posts");
+  const posts = await PostModel.find().sort({ createdAt: -1 });
 
-  if(!posts) {
+  if (!posts) {
     return null;
   }
 
-  return posts.reverse();
+  return posts;
 }
